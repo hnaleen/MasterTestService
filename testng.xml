@@ -1,7 +1,7 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="MasterTestSuite">
+<suite name="MasterTestSuite" thread-count="2" parallel="methods">
     <listeners>
         <listener class-name="com.hasa.MasterTestRunner"></listener>
     </listeners>

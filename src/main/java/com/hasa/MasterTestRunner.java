@@ -5,7 +5,7 @@ import se.cambio.qa.multiprocess.testframework.executor.TestExecutor;
 import se.cambio.qa.multiprocess.testframework.runner.DelegatingTestRunner;
 
 /**
- * - SlaveTestService -
+ * - MasterTestService -
  * @author Hasantha Alahakoon 
  */
 public class MasterTestRunner extends DelegatingTestRunner
