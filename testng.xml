@@ -1,0 +1,13 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="MasterTestSuite">
+    <listeners>
+        <listener class-name="com.hasa.MasterTestRunner"></listener>
+    </listeners>
+    <test name="Test A">
+        <classes>
+            <class name="se.cambio.qa.multiprocess.app.SampleCalculatorAppTest"></class>
+        </classes>
+    </test>
+</suite>
