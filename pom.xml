@@ -13,6 +13,16 @@
         <version>2.0.5.RELEASE</version>
     </parent>
 
+    <properties>
+        <!--<test_module_group_id>NO_TEST_MODULE_GROUP_ID_PROVIDED</test_module_group_id>-->
+        <!--<test_module_artifact_id>NO_TEST_MODULE_ARTIFACT_ID_PROVIDED</test_module_artifact_id>-->
+        <!--<test_module_version>NO_TEST_MODULE_VERSION_PROVIDED</test_module_version>-->
+
+        <test_module_group_id>se.cambio.qa</test_module_group_id>
+        <test_module_artifact_id>cambio-taf-support-runner</test_module_artifact_id>
+        <test_module_version>1.2.1-dev-SNAPSHOT</test_module_version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -37,6 +47,18 @@
     </build>
 
     <dependencies>
+        <dependency> <!-- Dependency for the Test Scripts to be run -->
+            <groupId>${test_module_group_id}</groupId>
+            <artifactId>${test_module_artifact_id}</artifactId>
+            <version>${test_module_version}</version>
+            <type>test-jar</type>
+        </dependency>
+        <dependency> <!-- Main Test Runner -->
+            <groupId>se.cambio.qa</groupId>
+            <artifactId>cambio-taf-support-runner</artifactId>
+            <version>1.2.1-dev-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
@@ -50,19 +72,6 @@
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <version>2.3.0</version>
-        </dependency>
-
-
-        <dependency> <!-- Main Test Runner -->
-            <groupId>se.cambio.qa</groupId>
-            <artifactId>cambio-taf-support-runner</artifactId>
-            <version>1.2.1-dev-SNAPSHOT</version>
-        </dependency>
-        <dependency> <!-- Sample Tests -->
-            <groupId>se.cambio.qa</groupId>
-            <artifactId>cambio-taf-support-runner</artifactId>
-            <version>1.2.1-dev-SNAPSHOT</version>
-            <type>test-jar</type>
         </dependency>
     </dependencies>
 
