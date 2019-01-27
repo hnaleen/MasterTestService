@@ -1,3 +1,6 @@
 /.idea
 /MasterTestService.iml
 /target
+/test-output
+/CTAF_logs
+dependency-reduced-pom.xml

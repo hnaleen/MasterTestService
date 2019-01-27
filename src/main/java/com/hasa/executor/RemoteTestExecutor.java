@@ -1,9 +1,9 @@
 package com.hasa.executor;
 
-import com.hasa.util.AppParams;
+import com.hasa.util.Environment;
 import org.springframework.web.client.RestTemplate;
-import se.cambio.qa.multiprocess.testframework.dto.TestCaseResultDTO;
-import se.cambio.qa.multiprocess.testframework.executor.TestExecutor;
+import se.cambio.test.runner.framework.dto.TestCaseResultDTO;
+import se.cambio.test.runner.framework.executor.TestExecutor;
 
 /**
  * - MasterTestService -
@@ -14,15 +14,15 @@ public class RemoteTestExecutor implements TestExecutor
   @Override public TestCaseResultDTO execute(final String testClassName, final String testMethodName)
       throws RuntimeException
   {
-    RestTemplate restTemplate = new RestTemplate();
-    TestCaseResultDTO result = restTemplate
+    System.out.println("Executing : " + testClassName + "." + testMethodName);
+    TestCaseResultDTO result = new RestTemplate()
         .getForObject(getTestServerUrl(testClassName, testMethodName), TestCaseResultDTO.class);
     return result;
   }
 
   private String getTestServerUrl(String testClassName, String testMethodName)
   {
-    return new StringBuilder(AppParams.getInstance().getTestServiceGatewayUrl()).append("v1/tests/")
+    return new StringBuilder(Environment.getInstance().getTestServiceGatewayUrl()).append("/v1/tests/")
         .append(testClassName).append("/").append(testMethodName).toString();
   }
 }

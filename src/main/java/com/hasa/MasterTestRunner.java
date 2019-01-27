@@ -1,8 +1,8 @@
 package com.hasa;
 
 import com.hasa.executor.RemoteTestExecutor;
-import se.cambio.qa.multiprocess.testframework.executor.TestExecutor;
-import se.cambio.qa.multiprocess.testframework.runner.DelegatingTestRunner;
+import se.cambio.test.runner.framework.executor.TestExecutor;
+import se.cambio.test.runner.framework.runner.DelegatingTestRunner;
 
 /**
  * - MasterTestService -
