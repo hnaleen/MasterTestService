@@ -27,11 +27,10 @@ public class Environment
 
   private String cambioRepoUrl = System.getProperty("cambioRepo", "http://repo.cambio.lk/nexus/content/groups/public");
 
-  private String testSuiteXml = System.getProperty("suite", "smoke.xml");
+  private String testSuiteXml = System.getProperty("testSuiteXml", "smoke.xml");
 
   public void waitTillReady() throws ExecutionException, RetryException
   {
-    System.out.println("****************************** numberOfSlaves" + numberOfSlaves);
     waitTillEurekaServerIsUp();
     waitTillTestGatewayIsUp();
     waitTillAllSlavesAreUp(getNumberOfSlaves());
@@ -59,7 +58,7 @@ public class Environment
 
   private void waitTillAllSlavesAreUp(int expectedNumberOfSlaves) throws ExecutionException, RetryException
   {
-    retryTill(6, 10).call(checkIfAllSlavesAreUp(expectedNumberOfSlaves));
+    retryTill(6, 10).call(checkIfAllSlavesAreUp(expectedNumberOfSlaves)); //TODO This does not seem to work when numberOfSlaves > 1
   }
 
   private Callable<Boolean> checkIfAllSlavesAreUp(int expectedNumberOfSlaves)
@@ -71,7 +70,7 @@ public class Environment
   private Callable<Boolean> checkIfTestGatewayIsUp()
   {
     return () -> {
-      System.out.println("Checking If Test Gateway is Ready ...");
+      System.out.println("Checking If Test Gateway is Ready at : " + testServiceGatewayUrl);
       RestTemplate restTemplate = new RestTemplate();
       return !restTemplate.getForObject(testServiceGatewayUrl.concat("/health"), String.class).isEmpty();
     };
@@ -80,7 +79,7 @@ public class Environment
   private Callable<Boolean> checkIfEurekaServerIsUp()
   {
     return () -> {
-      System.out.println("Checking If Test Registry is Ready ...");
+      System.out.println("Checking If Test Registry is Ready at : " + discoveryServerUrl);
       RestTemplate restTemplate = new RestTemplate();
       return !restTemplate.getForObject(discoveryServerUrl.concat("/eureka/apps/"), String.class).isEmpty();
     };
@@ -123,5 +122,17 @@ public class Environment
       instance = new Environment();
     }
     return instance;
+  }
+
+  private Environment()
+  {
+    System.out.println("--------------------------------------------------");
+    System.out.println("Test Suite Xml to Run : " + testSuiteXml);
+    System.out.println("Test Gateway Url : " + testServiceGatewayUrl);
+    System.out.println("Test Registry Url : " + discoveryServerUrl);
+    System.out.println("Number Of Slaves : " + numberOfSlaves);
+    System.out.println("Cambio Remote Repository : " + cambioRepoUrl);
+    System.out.println("Maven Local Repository : " + mavenLocalRepoPath);
+    System.out.println("--------------------------------------------------");
   }
 }

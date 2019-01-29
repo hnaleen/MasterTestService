@@ -22,11 +22,12 @@ public class Main
   {
     try
     {
-      System.out.println("************************** Starting Master Test Service **************************");
+      String[] dependencyInfo = validateAndGetDependencyInfo(args);
+      System.out.println("************ Starting Master Test Service for " + Arrays.toString(dependencyInfo) + " ************");
       TestModuleInfo testModuleInfo = DynamicTestModuleLoader.getInstance()
-          .loadTestModuleWithDependencies("se.cambio.qa", "cambio-taf-nova-ward-test", "1.0-SNAPSHOT"); //TODO
+          .loadTestModuleWithDependencies(dependencyInfo[0], dependencyInfo[1], dependencyInfo[2]); //TODO
       Environment.getInstance().waitTillReady();
-      new Main().runTestSuite(testModuleInfo, Environment.getInstance().getNumberOfSlaves());
+            new Main().runTestSuite(testModuleInfo, Environment.getInstance().getNumberOfSlaves());
     }
     catch (DependencyResolutionException e)
     {
@@ -57,5 +58,23 @@ public class Main
       testNG.setThreadCount(numberOfSlaves);
     }
     testNG.run();
+  }
+
+  private static String[] validateAndGetDependencyInfo(String[] args)
+  {
+    String[] dependencyInfo;
+    if (args.length == 1)
+    {
+      dependencyInfo = args[0].split(":");
+      if (dependencyInfo.length != 3)
+      {
+        throw new RuntimeException("Test Module Dependency Information not provided. Need to be in Following Format: groupId:artifactid:version");
+      }
+    }
+    else
+    {
+      throw new RuntimeException("Test Module Dependency Information not provided.");
+    }
+    return dependencyInfo;
   }
 }
