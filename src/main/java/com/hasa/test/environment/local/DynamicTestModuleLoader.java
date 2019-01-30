@@ -1,6 +1,9 @@
-package com.hasa.testmodule;
+package com.hasa.test.environment.local;
 
-import com.hasa.util.Environment;
+import com.hasa.test.config.Configuration;
+import com.hasa.test.environment.remote.RemoteEnvironment;
+import com.hasa.test.module.LoadedTestModuleInfo;
+import com.hasa.test.module.TestModuleInfo;
 import com.hasa.util.XmlUtil;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.eclipse.aether.DefaultRepositorySystemSession;
@@ -39,19 +42,19 @@ public class DynamicTestModuleLoader
 {
   private static DynamicTestModuleLoader instance;
 
-  public TestModuleInfo loadTestModuleWithDependencies(String groupId, String artifactId, String version)
+  public LoadedTestModuleInfo loadTestModuleWithDependencies(TestModuleInfo testModuleInfo)
       throws DependencyResolutionException, IOException
   {
-    DependencyResult dependencies = downloadTestDependenciesFromRepo(groupId, artifactId, version);
+    DependencyResult dependencies = downloadTestDependenciesFromRepo(testModuleInfo.getGroupId(), testModuleInfo.getArtifactId(), testModuleInfo.getVersion());
     ClassLoader classLoaderOfDependencies = loadTestDependenciesToVM(dependencies);
     InputStream testSuiteXmlAsASteam = getTestSuiteXMLFromTestModule(classLoaderOfDependencies);
     String testSuiteXMLPath = XmlUtil.getInstance().moveTestSuiteXmlToTempLocation(testSuiteXmlAsASteam);
-    return new TestModuleInfo(classLoaderOfDependencies, testSuiteXMLPath);
+    return new LoadedTestModuleInfo(testModuleInfo, classLoaderOfDependencies, testSuiteXMLPath);
   }
 
   private InputStream getTestSuiteXMLFromTestModule(ClassLoader classLoaderOfDependencies)
   {
-    return classLoaderOfDependencies.getResourceAsStream("testplan/" + Environment.getInstance().getTestSuiteXml());
+    return classLoaderOfDependencies.getResourceAsStream("testplan/" + Configuration.getInstance().getTestSuiteXml());
   }
 
   private ClassLoader loadTestDependenciesToVM(DependencyResult dependencies) throws MalformedURLException
@@ -71,14 +74,14 @@ public class DynamicTestModuleLoader
 
     DefaultRepositorySystemSession session = MavenRepositorySystemUtils.newSession();
 
-    LocalRepository localRepo = new LocalRepository(Environment.getInstance().getMavenLocalRepoPath());
+    LocalRepository localRepo = new LocalRepository(Configuration.getInstance().getMavenLocalRepoPath());
     session.setLocalRepositoryManager(system.newLocalRepositoryManager(session, localRepo));
 
     Artifact artifact = new DefaultArtifact(groupId, artifactId, "tests","jar", version);
     ArtifactRequest artifactRequest = new ArtifactRequest();
     artifactRequest.setArtifact(artifact);
 
-    RemoteRepository cambioRepo = new RemoteRepository.Builder("central", "default", Environment.getInstance().getCambioRepoUrl()).build();
+    RemoteRepository cambioRepo = new RemoteRepository.Builder("central", "default", Configuration.getInstance().getCambioRepoUrl()).build();
     artifactRequest.addRepository(cambioRepo);
 
     DependencyFilter classpathFlter = DependencyFilterUtils.classpathFilter( JavaScopes.COMPILE );

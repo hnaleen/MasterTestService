@@ -1,6 +1,6 @@
 package com.hasa;
 
-import com.hasa.executor.RemoteTestExecutor;
+import com.hasa.test.executor.RemoteTestExecutor;
 import se.cambio.test.runner.framework.executor.TestExecutor;
 import se.cambio.test.runner.framework.runner.DelegatingTestRunner;
 

@@ -1,15 +1,14 @@
 package com.hasa;
 
 import com.github.rholder.retry.RetryException;
-import com.hasa.testmodule.DynamicTestModuleLoader;
-import com.hasa.testmodule.TestModuleInfo;
-import com.hasa.util.Environment;
+import com.hasa.test.config.Configuration;
+import com.hasa.test.environment.local.LocalTestEnvironment;
+import com.hasa.test.environment.remote.RemoteEnvironment;
+import com.hasa.test.module.LoadedTestModuleInfo;
+import com.hasa.test.module.TestModuleInfo;
 import org.eclipse.aether.resolution.DependencyResolutionException;
-import org.testng.TestNG;
-import org.testng.xml.XmlSuite;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -22,21 +21,17 @@ public class Main
   {
     try
     {
-      String[] dependencyInfo = validateAndGetDependencyInfo(args);
-      System.out.println("************ Starting Master Test Service for " + Arrays.toString(dependencyInfo) + " ************");
-      TestModuleInfo testModuleInfo = DynamicTestModuleLoader.getInstance()
-          .loadTestModuleWithDependencies(dependencyInfo[0], dependencyInfo[1], dependencyInfo[2]); //TODO
-      Environment.getInstance().waitTillReady();
-            new Main().runTestSuite(testModuleInfo, Environment.getInstance().getNumberOfSlaves());
+      TestModuleInfo testModuleInfo = validateAndGetTestModuleInfo(args);
+      RemoteEnvironment.getInstance().start(testModuleInfo);
+      LoadedTestModuleInfo loadedTestModuleInfo = LocalTestEnvironment.getInstance()
+          .loadTestModuleWithDependencies(testModuleInfo);
+      RemoteEnvironment.getInstance().waitAndSeeIfReady();
+      LocalTestEnvironment.getInstance()
+          .runTestSuite(loadedTestModuleInfo, Configuration.getInstance().getNumberOfSlaves());
     }
     catch (DependencyResolutionException e)
     {
       System.out.println("Error Loading Test Module from Maven dependency info.");
-      e.printStackTrace();
-    }
-    catch (IOException e)
-    {
-      System.out.println("Error Extracting TestSuite XML File from Test Module.");
       e.printStackTrace();
     }
     catch (ExecutionException | RetryException e)
@@ -44,31 +39,31 @@ public class Main
       System.out.println("Error Setting up Test Environment. Test Suite Execution will be aborted.");
       e.printStackTrace();
     }
-  }
-
-  private void runTestSuite(TestModuleInfo testModuleInfo, int numberOfSlaves)
-  {
-    TestNG testNG = new TestNG();
-    testNG.setTestSuites(Arrays.asList(testModuleInfo.getTestSuiteXmlFile()));
-    testNG.setListenerClasses(Arrays.asList(MasterTestRunner.class));
-    testNG.addClassLoader(testModuleInfo.getTestModuleClassLoader());
-    if (numberOfSlaves > 1)
+    catch (IOException e)
     {
-      testNG.setParallel(XmlSuite.ParallelMode.METHODS);
-      testNG.setThreadCount(numberOfSlaves);
+      System.out.println("Error Extracting TestSuite XML File from Test Module.");
+      e.printStackTrace();
     }
-    testNG.run();
+    finally
+    {
+      RemoteEnvironment.getInstance().kill();
+    }
   }
 
-  private static String[] validateAndGetDependencyInfo(String[] args)
+  private static TestModuleInfo validateAndGetTestModuleInfo(String[] args)
   {
-    String[] dependencyInfo;
+    TestModuleInfo dependencyInfo;
     if (args.length == 1)
     {
-      dependencyInfo = args[0].split(":");
-      if (dependencyInfo.length != 3)
+      String[] testModuleInfoArray = args[0].split(":");
+      if (testModuleInfoArray.length == 3)
       {
-        throw new RuntimeException("Test Module Dependency Information not provided. Need to be in Following Format: groupId:artifactid:version");
+        dependencyInfo = new TestModuleInfo(testModuleInfoArray);
+      }
+      else
+      {
+        throw new RuntimeException(
+            "Test Module Dependency Information not provided. Need to be in Following Format: groupId:artifactid:version");
       }
     }
     else

@@ -1,6 +1,6 @@
-package com.hasa.executor;
+package com.hasa.test.executor;
 
-import com.hasa.util.Environment;
+import com.hasa.test.config.Configuration;
 import org.springframework.web.client.RestTemplate;
 import se.cambio.test.runner.framework.dto.TestCaseResultDTO;
 import se.cambio.test.runner.framework.executor.TestExecutor;
@@ -22,7 +22,7 @@ public class RemoteTestExecutor implements TestExecutor
 
   private String getTestServerUrl(String testClassName, String testMethodName)
   {
-    return new StringBuilder(Environment.getInstance().getTestServiceGatewayUrl()).append("/v1/tests/")
+    return new StringBuilder(Configuration.getInstance().getTestServiceGatewayUrl()).append("/v1/tests/")
         .append(testClassName).append("/").append(testMethodName).toString();
   }
 }
