@@ -26,8 +26,8 @@ public class Main
       TestModuleRuntimeInfo testModuleRuntimeInfo = DistributedTestEnvironmentDelegate.getInstance()
           .loadTestModuleToLocalVM(testModuleInfo);
       DistributedTestEnvironment.getInstance().waitAndSeeIfReady();
-//      DistributedTestEnvironmentDelegate.getInstance()
-//          .coordinateTestSuiteRun(testModuleRuntimeInfo, Configuration.getInstance().getNumberOfSlaves());
+      DistributedTestEnvironmentDelegate.getInstance()
+          .coordinateTestSuiteRun(testModuleRuntimeInfo, Configuration.getInstance().getNumberOfSlaves());
     }
     catch (DependencyResolutionException e)
     {
