@@ -1,7 +1,7 @@
 package com.hasa.test.environment.local;
 
 import com.hasa.MasterTestRunner;
-import com.hasa.test.module.LoadedTestModuleInfo;
+import com.hasa.test.module.TestModuleRuntimeInfo;
 import com.hasa.test.module.TestModuleInfo;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.testng.TestNG;
@@ -14,23 +14,23 @@ import java.util.Arrays;
  * - MasterTestService -
  * @author Hasantha Alahakoon 
  */
-public class LocalTestEnvironment
+public class DistributedTestEnvironmentDelegate
 {
-  private static LocalTestEnvironment instance;
+  private static DistributedTestEnvironmentDelegate instance;
 
-  public LoadedTestModuleInfo loadTestModuleWithDependencies(TestModuleInfo testModuleInfo)
+  public TestModuleRuntimeInfo loadTestModuleToLocalVM(TestModuleInfo testModuleInfo)
       throws DependencyResolutionException, IOException
   {
     return DynamicTestModuleLoader.getInstance()
         .loadTestModuleWithDependencies(testModuleInfo);
   }
 
-  public void runTestSuite(LoadedTestModuleInfo testModuleInfo, int numberOfSlaves)
+  public void coordinateTestSuiteRun(TestModuleRuntimeInfo testModuleRuntimeInfo, int numberOfSlaves)
   {
     TestNG testNG = new TestNG();
-    testNG.setTestSuites(Arrays.asList(testModuleInfo.getTestSuiteXmlFile()));
+    testNG.setTestSuites(Arrays.asList(testModuleRuntimeInfo.getTestSuiteXmlFile()));
     testNG.setListenerClasses(Arrays.asList(MasterTestRunner.class));
-    testNG.addClassLoader(testModuleInfo.getTestModuleClassLoader());
+    testNG.addClassLoader(testModuleRuntimeInfo.getClassLoader());
     if (numberOfSlaves > 1)
     {
       testNG.setParallel(XmlSuite.ParallelMode.METHODS);
@@ -38,11 +38,11 @@ public class LocalTestEnvironment
     }
     testNG.run();
   }
-  public static LocalTestEnvironment getInstance()
+  public static DistributedTestEnvironmentDelegate getInstance()
   {
     if (instance == null)
     {
-      instance = new LocalTestEnvironment();
+      instance = new DistributedTestEnvironmentDelegate();
     }
     return instance;
   }

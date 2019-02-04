@@ -12,7 +12,7 @@ public class Configuration
 
   private String testServiceGatewayUrl = System.getProperty("testGatewayUrl", "http://localhost:8910");
 
-  private String numberOfSlaves = System.getProperty("numberOfSlaves", "1");
+  private String numberOfSlaves = System.getProperty("numberOfSlaves", "2");
 
   private String mavenLocalRepoPath = System.getProperty("localRepo", "C:/Software/mvn_repo_352");
 

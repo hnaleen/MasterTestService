@@ -2,9 +2,9 @@ package com.hasa;
 
 import com.github.rholder.retry.RetryException;
 import com.hasa.test.config.Configuration;
-import com.hasa.test.environment.local.LocalTestEnvironment;
-import com.hasa.test.environment.remote.RemoteEnvironment;
-import com.hasa.test.module.LoadedTestModuleInfo;
+import com.hasa.test.environment.local.DistributedTestEnvironmentDelegate;
+import com.hasa.test.environment.remote.DistributedTestEnvironment;
+import com.hasa.test.module.TestModuleRuntimeInfo;
 import com.hasa.test.module.TestModuleInfo;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 
@@ -22,12 +22,12 @@ public class Main
     try
     {
       TestModuleInfo testModuleInfo = validateAndGetTestModuleInfo(args);
-      RemoteEnvironment.getInstance().start(testModuleInfo);
-      LoadedTestModuleInfo loadedTestModuleInfo = LocalTestEnvironment.getInstance()
-          .loadTestModuleWithDependencies(testModuleInfo);
-      RemoteEnvironment.getInstance().waitAndSeeIfReady();
-      LocalTestEnvironment.getInstance()
-          .runTestSuite(loadedTestModuleInfo, Configuration.getInstance().getNumberOfSlaves());
+      DistributedTestEnvironment.getInstance().spawn(testModuleInfo);
+      TestModuleRuntimeInfo testModuleRuntimeInfo = DistributedTestEnvironmentDelegate.getInstance()
+          .loadTestModuleToLocalVM(testModuleInfo);
+      DistributedTestEnvironment.getInstance().waitAndSeeIfReady();
+//      DistributedTestEnvironmentDelegate.getInstance()
+//          .coordinateTestSuiteRun(testModuleRuntimeInfo, Configuration.getInstance().getNumberOfSlaves());
     }
     catch (DependencyResolutionException e)
     {
@@ -46,7 +46,7 @@ public class Main
     }
     finally
     {
-      RemoteEnvironment.getInstance().kill();
+      DistributedTestEnvironment.getInstance().kill();
     }
   }
 

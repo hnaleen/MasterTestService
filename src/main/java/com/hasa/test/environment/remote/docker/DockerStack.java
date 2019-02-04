@@ -1,9 +1,9 @@
 package com.hasa.test.environment.remote.docker;
 
 import com.hasa.test.config.Configuration;
-import com.hasa.test.environment.remote.RemoteEnvironment;
 import com.hasa.test.module.TestModuleInfo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class DockerStack
         throw new RuntimeException("Error Starting Docker Test Environment");
       }
     }
-    catch (Exception e)
+    catch (IOException | InterruptedException e)
     {
       throw new RuntimeException("Error Starting Docker Test Environment", e);
     }

@@ -6,17 +6,17 @@ package com.hasa.test.module;
  */
 public class TestModuleInfo
 {
-  private String testModuleGroupId;
+  private String groupId;
 
-  private String testModuleArtifactId;
+  private String artifactId;
 
-  private String testModuleVersion;
+  private String version;
 
   public TestModuleInfo(String testModuleGroupId, String testModuleArtifactId, String testModuleVersion)
   {
-    this.testModuleGroupId = testModuleGroupId;
-    this.testModuleArtifactId = testModuleArtifactId;
-    this.testModuleVersion = testModuleVersion;
+    this.groupId = testModuleGroupId;
+    this.artifactId = testModuleArtifactId;
+    this.version = testModuleVersion;
   }
 
   public TestModuleInfo(String[] testInfoArray)
@@ -26,21 +26,21 @@ public class TestModuleInfo
 
   public String getGroupId()
   {
-    return testModuleGroupId;
+    return groupId;
   }
 
   public String getArtifactId()
   {
-    return testModuleArtifactId;
+    return artifactId;
   }
 
   public String getVersion()
   {
-    return testModuleVersion;
+    return version;
   }
 
   @Override public String toString()
   {
-    return testModuleGroupId.concat(" : ").concat(testModuleArtifactId).concat(" : ").concat(testModuleVersion);
+    return groupId.concat(" : ").concat(artifactId).concat(" : ").concat(version);
   }
 }

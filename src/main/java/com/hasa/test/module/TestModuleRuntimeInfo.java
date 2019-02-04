@@ -4,24 +4,24 @@ package com.hasa.test.module;
  * - MasterTestService -
  * @author Hasantha Alahakoon 
  */
-public class LoadedTestModuleInfo
+public class TestModuleRuntimeInfo
 {
   private TestModuleInfo testModuleInfo;
 
-  private ClassLoader testModuleClassLoader;
+  private ClassLoader classLoader;
 
   private String testSuiteXmlFile;
 
-  public LoadedTestModuleInfo(TestModuleInfo testModuleInfo, ClassLoader testModuleClassLoader, String testSuiteXmlFile)
+  public TestModuleRuntimeInfo(TestModuleInfo testModuleInfo, ClassLoader testModuleClassLoader, String testSuiteXmlFile)
   {
     this.testModuleInfo = testModuleInfo;
-    this.testModuleClassLoader = testModuleClassLoader;
+    this.classLoader = testModuleClassLoader;
     this.testSuiteXmlFile = testSuiteXmlFile;
   }
 
-  public ClassLoader getTestModuleClassLoader()
+  public ClassLoader getClassLoader()
   {
-    return testModuleClassLoader;
+    return classLoader;
   }
 
   public String getTestSuiteXmlFile()

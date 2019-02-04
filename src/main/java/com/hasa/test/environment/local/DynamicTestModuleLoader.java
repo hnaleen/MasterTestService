@@ -1,8 +1,7 @@
 package com.hasa.test.environment.local;
 
 import com.hasa.test.config.Configuration;
-import com.hasa.test.environment.remote.RemoteEnvironment;
-import com.hasa.test.module.LoadedTestModuleInfo;
+import com.hasa.test.module.TestModuleRuntimeInfo;
 import com.hasa.test.module.TestModuleInfo;
 import com.hasa.util.XmlUtil;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
@@ -42,14 +41,14 @@ public class DynamicTestModuleLoader
 {
   private static DynamicTestModuleLoader instance;
 
-  public LoadedTestModuleInfo loadTestModuleWithDependencies(TestModuleInfo testModuleInfo)
+  public TestModuleRuntimeInfo loadTestModuleWithDependencies(TestModuleInfo testModuleInfo)
       throws DependencyResolutionException, IOException
   {
     DependencyResult dependencies = downloadTestDependenciesFromRepo(testModuleInfo.getGroupId(), testModuleInfo.getArtifactId(), testModuleInfo.getVersion());
     ClassLoader classLoaderOfDependencies = loadTestDependenciesToVM(dependencies);
     InputStream testSuiteXmlAsASteam = getTestSuiteXMLFromTestModule(classLoaderOfDependencies);
     String testSuiteXMLPath = XmlUtil.getInstance().moveTestSuiteXmlToTempLocation(testSuiteXmlAsASteam);
-    return new LoadedTestModuleInfo(testModuleInfo, classLoaderOfDependencies, testSuiteXMLPath);
+    return new TestModuleRuntimeInfo(testModuleInfo, classLoaderOfDependencies, testSuiteXMLPath);
   }
 
   private InputStream getTestSuiteXMLFromTestModule(ClassLoader classLoaderOfDependencies)
