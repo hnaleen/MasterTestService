@@ -4,8 +4,8 @@ import com.github.rholder.retry.RetryException;
 import com.hasa.test.config.Configuration;
 import com.hasa.test.environment.local.DistributedTestEnvironmentDelegate;
 import com.hasa.test.environment.remote.DistributedTestEnvironment;
-import com.hasa.test.module.TestModuleRuntimeInfo;
 import com.hasa.test.module.TestModuleInfo;
+import com.hasa.test.module.TestModuleRuntimeInfo;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 
 import java.io.IOException;

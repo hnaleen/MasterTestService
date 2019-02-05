@@ -2,5 +2,6 @@
 /MasterTestService.iml
 /target
 /test-output
+/testng_reporter-reports
 /CTAF_logs
 dependency-reduced-pom.xml
